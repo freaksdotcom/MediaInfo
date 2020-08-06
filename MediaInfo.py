@@ -82,6 +82,8 @@ class MediaInfo:
         videoStreamIndex = None
         audioStreamIndex = None
 
+        mediaInfo["tags"] = infoDict.get("format").get("tags")
+
         for item in infoDict.get("streams"):
             codec_type = item.get("codec_type")
 
