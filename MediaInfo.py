@@ -51,7 +51,7 @@ class MediaInfo:
             "-show_format",
             "-show_streams",
             "-show_error",
-            "-count_frames",
+            # "-count_frames",
             "-i",
             self.filename,
         ]
@@ -178,12 +178,12 @@ class MediaInfo:
             generalInfo = general.group(0)
 
             container = re.search(
-                "Format\s*:\s*([\w\_\-\\\/\. ]+)\n", generalInfo, re.S
+                r"Format\s*:\s*([\w\_\-\\\/\. ]+)\n", generalInfo, re.S
             )
-            fileSize = re.search("File size\s*:\s*(\d+)\.?\d*\n", generalInfo, re.S)
-            duration = re.search("Duration\s*:\s*(\d+)\.?\d*\n", generalInfo, re.S)
+            fileSize = re.search(r"File size\s*:\s*(\d+)\.?\d*\n", generalInfo, re.S)
+            duration = re.search(r"Duration\s*:\s*(\d+)\.?\d*\n", generalInfo, re.S)
             bitrate = re.search(
-                "Overall bit rate\s*:\s*(\d+)\.?\d*\n", generalInfo, re.S
+                r"Overall bit rate\s*:\s*(\d+)\.?\d*\n", generalInfo, re.S
             )
 
             mediaInfo["container"] = container.group(1)
@@ -191,25 +191,25 @@ class MediaInfo:
             mediaInfo["duration"] = (str)((float)(duration.group(1)) / 1000)
             mediaInfo["bitrate"] = bitrate.group(1)
 
-        video = re.search("(\nVideo[\s\#\d]*\n.*?\n\n)", sourceString, re.S)
+        video = re.search(r"(\nVideo[\s\#\d]*\n.*?\n\n)", sourceString, re.S)
         if video:
             mediaInfo["haveVideo"] = 1
             videoInfo = video.group(0)
 
-            videoCodec = re.search("Codec\s*:\s*([\w\_\-\\\/\. ]+)\n", videoInfo, re.S)
+            videoCodec = re.search(r"Codec\s*:\s*([\w\_\-\\\/\. ]+)\n", videoInfo, re.S)
             videoCodecProfile = re.search(
-                "Codec profile\s*:\s*([\w\_\-\\\/\@\. ]+)\n", videoInfo, re.S
+                r"Codec profile\s*:\s*([\w\_\-\\\/\@\. ]+)\n", videoInfo, re.S
             )
-            videoDuration = re.search("Duration\s*:\s*(\d+)\.?\d*\n", videoInfo, re.S)
-            videoBitrate = re.search("Bit rate\s*:\s*(\d+)\n", videoInfo, re.S)
-            videoWidth = re.search("Width\s*:\s*(\d+)\n", videoInfo, re.S)
-            videoHeight = re.search("Height\s*:\s*(\d+)\n", videoInfo, re.S)
+            videoDuration = re.search(r"Duration\s*:\s*(\d+)\.?\d*\n", videoInfo, re.S)
+            videoBitrate = re.search(r"Bit rate\s*:\s*(\d+)\n", videoInfo, re.S)
+            videoWidth = re.search(r"Width\s*:\s*(\d+)\n", videoInfo, re.S)
+            videoHeight = re.search(r"Height\s*:\s*(\d+)\n", videoInfo, re.S)
             videoAspectRatio = re.search(
-                "Display aspect ratio\s*:\s*([\d\.]+)\n", videoInfo, re.S
+                r"Display aspect ratio\s*:\s*([\d\.]+)\n", videoInfo, re.S
             )
-            videoFrameRate = re.search("Frame rate\s*:\s*([\d\.]+)\n", videoInfo, re.S)
+            videoFrameRate = re.search(r"Frame rate\s*:\s*([\d\.]+)\n", videoInfo, re.S)
             videoFrameCount = re.search(
-                "Frame count\s*:\s*(\d+)\.?\d*\n", videoInfo, re.S
+                r"Frame count\s*:\s*(\d+)\.?\d*\n", videoInfo, re.S
             )
 
             if videoCodec:
@@ -233,28 +233,30 @@ class MediaInfo:
             if videoFrameCount:
                 mediaInfo["videoFrameCount"] = videoFrameCount.group(1)
 
-        audio = re.search("(\nAudio[\s\#\d]*\n.*?\n\n)", sourceString, re.S)
+        audio = re.search(r"(\nAudio[\s\#\d]*\n.*?\n\n)", sourceString, re.S)
         if audio:
             mediaInfo["haveAudio"] = 1
             audioInfo = audio.group(0)
 
-            tmpAudioCodec = re.search("Codec\s*:\s*([\w\_\-\\\/ ]+)\n", audioInfo, re.S)
-            audioCodec = re.search("\w+", tmpAudioCodec.group(1), re.S)
+            tmpAudioCodec = re.search(
+                r"Codec\s*:\s*([\w\_\-\\\/ ]+)\n", audioInfo, re.S
+            )
+            audioCodec = re.search(r"\w+", tmpAudioCodec.group(1), re.S)
             audioCodecProfile = re.search(
-                "Codec profile\s*:\s*([\w\_\-\\\/\@\. ]+)\n", audioInfo, re.S
+                r"Codec profile\s*:\s*([\w\_\-\\\/\@\. ]+)\n", audioInfo, re.S
             )
             if audioCodecProfile is None:
                 audioCodecProfile = re.search(
-                    "Format profile\s*:\s*([\w\_\-\\\/\@\. ]+)\n", audioInfo, re.S
+                    r"Format profile\s*:\s*([\w\_\-\\\/\@\. ]+)\n", audioInfo, re.S
                 )
 
-            audioDuration = re.search("Duration\s*:\s*(\d+)\.?\d*\n", audioInfo, re.S)
-            audioBitrate = re.search("Bit rate\s*:\s*(\d+)\n", audioInfo, re.S)
-            audioChannel = re.search("Channel\(s\)\s*:\s*(\d+)\n", audioInfo, re.S)
+            audioDuration = re.search(r"Duration\s*:\s*(\d+)\.?\d*\n", audioInfo, re.S)
+            audioBitrate = re.search(r"Bit rate\s*:\s*(\d+)\n", audioInfo, re.S)
+            audioChannel = re.search(r"Channel\(s\)\s*:\s*(\d+)\n", audioInfo, re.S)
             samplingRate = re.search(
-                "Sampling rate\s*:\s*([\w\_\-\\\/\@\. ]+)\n", audioInfo, re.S
+                r"Sampling rate\s*:\s*([\w\_\-\\\/\@\. ]+)\n", audioInfo, re.S
             )
-            audioSamplingRate = re.search("\d+", samplingRate.group(1), re.S)
+            audioSamplingRate = re.search(r"\d+", samplingRate.group(1), re.S)
 
             if audioCodec:
                 mediaInfo["audioCodec"] = audioCodec.group(0)
