@@ -40,7 +40,7 @@ class MediaInfo:
 
         return self.info
 
-    def _ffmpegGetInfo(self):
+    def _ffmpegGetInfo(self, count_frames=False):
 
         cmd = [
             self.cmd,
@@ -51,10 +51,13 @@ class MediaInfo:
             "-show_format",
             "-show_streams",
             "-show_error",
-            # "-count_frames",
-            "-i",
-            self.filename,
         ]
+        if count_frames:
+            cmd.append("-count_frames")
+
+        cmd.extend(
+            ["-i", self.filename,]
+        )
         outputBytes = ""
 
         try:
